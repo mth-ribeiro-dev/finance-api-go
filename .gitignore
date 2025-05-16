@@ -15,6 +15,9 @@
 /build/         # Pasta de build customizado
 /dist/          # Pasta para distribuição (se usada)
 
+# Compiled binaries for different OS/ARCH
+finance-api-*
+
 ########################################
 # ⚙️ Arquivos gerados por IDEs/editors
 ########################################
