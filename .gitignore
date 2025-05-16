@@ -1,0 +1,58 @@
+########################################
+# 🔧 Arquivos gerados pelo build
+########################################
+
+*.exe           # Executável Windows
+*.out           # Executável Unix-like
+*.run           # Arquivos de execução direta
+*.test          # Arquivos gerados por `go test -c`
+
+########################################
+# 📁 Diretórios de build e distribuição
+########################################
+
+/bin/           # Pasta com binários compilados (se usada)
+/build/         # Pasta de build customizado
+/dist/          # Pasta para distribuição (se usada)
+
+########################################
+# ⚙️ Arquivos gerados por IDEs/editors
+########################################
+
+.idea/          # Configurações da GoLand (JetBrains)
+/.vscode/       # Configurações do VS Code
+*.swp           # Arquivos temporários de edição (Vim, etc.)
+
+########################################
+# 🧾 Arquivos de log e backups temporários
+########################################
+
+*.log           # Arquivos de log
+*.tmp           # Arquivos temporários
+*.bak           # Backups automáticos
+
+########################################
+# 📦 Dependências vendorizadas (opcional)
+########################################
+
+/vendor/        # Pasta gerada por `go mod vendor` (opcional ignorar)
+
+########################################
+# 🧠 Arquivos de sistema e ocultos
+########################################
+
+.DS_Store       # macOS - metadados de diretório
+Thumbs.db       # Windows - cache de miniaturas
+
+########################################
+# 💾 Arquivo de dados da aplicação
+########################################
+
+transactions.json   # Arquivo local de armazenamento (salvo externamente)
+
+########################################
+# ✅ Importante: NÃO ignore arquivos de módulo
+########################################
+
+# go.mod e go.sum DEVEM ser versionados
+# pois garantem consistência das dependências do projeto
