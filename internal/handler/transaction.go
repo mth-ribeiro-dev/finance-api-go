@@ -24,7 +24,7 @@ func (handler *Handler) AddTransaction(context *gin.Context) {
 		var syntaxErr *json.SyntaxError
 		var unmarshalTypeErr *json.UnmarshalTypeError
 
-		if errors.As(err, &syntaxErr) || errors.As(err, unmarshalTypeErr) {
+		if errors.As(err, &syntaxErr) || errors.As(err, &unmarshalTypeErr) {
 			context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON syntax"})
 			return
 		}
