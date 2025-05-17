@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/model"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/storage"
 	"log"
 	"os"
 	"os/user"
 	"path/filepath"
+	"strconv"
 )
 
 type FinanceService struct {
@@ -87,4 +89,27 @@ func (finance *FinanceService) GetBalance() float64 {
 		}
 	}
 	return balance
+}
+
+func (finance *FinanceService) DeleteTransaction(idString string) error {
+	id, _ := strconv.Atoi(idString)
+	for index, transaction := range finance.Transaction {
+		if transaction.ID == id {
+			finance.Transaction = append(finance.Transaction[:index], finance.Transaction[index+1:]...)
+			return storage.SaveToFile(finance.Transaction, finance.Filename)
+		}
+	}
+	return errors.New("Transaction not found")
+}
+
+func (finance *FinanceService) UpdateTransaction(idString string, updated model.Transaction) error {
+	id, _ := strconv.Atoi(idString)
+	for index, transaction := range finance.Transaction {
+		if transaction.ID == id {
+			updated.ID = id
+			finance.Transaction[index] = updated
+			return storage.SaveToFile(finance.Transaction, finance.Filename)
+		}
+	}
+	return errors.New("Transaction not found")
 }
