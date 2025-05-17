@@ -14,7 +14,12 @@ func main() {
 	router.POST("/finance/transaction", hand.AddTransaction)
 	router.GET("finance/transactions", hand.GetTransactions)
 	router.GET("finance/balance", hand.GetBalance)
+	router.PUT("/transactions/:id", hand.UpdateTransaction)
+	router.DELETE("/transactions/:id", hand.DeleteTransaction)
 
-	router.Run(":8081")
+	err := router.Run(":8081")
+	if err != nil {
+		return
+	}
 
 }
