@@ -12,11 +12,11 @@ const dateLayout = "1999-01-01"
 
 func (date *DateOnly) UnmarshalJSON(byte []byte) error {
 	strn := strings.Trim(string(byte), `"`)
-	time, err := time.Parse(dateLayout, strn)
+	timeParse, err := time.Parse(dateLayout, strn)
 	if err != nil {
 		return err
 	}
-	*date = DateOnly(time)
+	*date = DateOnly(timeParse)
 	return nil
 }
 
