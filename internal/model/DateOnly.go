@@ -8,7 +8,7 @@ import (
 
 type DateOnly time.Time
 
-const dateLayout = "1999-01-01"
+const dateLayout = "2006-01-02"
 
 func (date *DateOnly) UnmarshalJSON(byte []byte) error {
 	strn := strings.Trim(string(byte), `"`)

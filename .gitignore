@@ -17,6 +17,7 @@
 
 # Compiled binaries for different OS/ARCH
 finance-api-*
+*.ps1
 
 ########################################
 # ⚙️ Arquivos gerados por IDEs/editors
