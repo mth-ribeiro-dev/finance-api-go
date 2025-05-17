@@ -39,7 +39,10 @@ A API permite registrar transações financeiras com os seguintes campos:
 ```json
 {
   "type": "income" | "expense",
-  "amount": 100.0
+  "amount": 100.0,
+  "category": "string",
+  "date": "yyyy-mm-dd",
+  "description": "string"
 }
 ```
 
@@ -55,11 +58,13 @@ Esse caminho é gerado automaticamente com base no usuário atual do sistema.
 
 ## 📌 Endpoints Disponíveis
 
-| Método | Rota             | Função                         |
-|--------|------------------|--------------------------------|
-| POST   | `/transaction`   | Adiciona uma nova transação    |
-| GET    | `/transactions`  | Retorna o histórico completo   |
-| GET    | `/balance`       | Retorna o saldo atual          |
+| Método | Rota                   | Função                                 |
+|--------|------------------------|----------------------------------------|
+| POST   | `/transaction`         | Adiciona uma nova transação            |
+| GET    | `/transactions`        | Retorna o histórico completo           |
+| GET    | `/balance`             | Retorna o saldo atual                  |
+| PUT    | `/transactions/:id`    | Atualiza uma transação existente       |
+| DELETE | `/transactions/:id`    | Remove uma transação pelo ID           |
 
 ---
 
@@ -75,8 +80,8 @@ Esse caminho é gerado automaticamente com base no usuário atual do sistema.
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/finance-api.git
-cd finance-api
+git clone https://github.com/mth-ribeiro-dev/finance-api-go.git
+cd finance-api-go
 ```
 
 2. Baixe as dependências:
@@ -98,20 +103,34 @@ A API estará disponível em:
 
 ## 🧪 Testando com cURL ou Postman
 
-### ✅ Adicionar receita
+### ✅ Adicionar transação
 
 ```bash
-curl -X POST http://localhost:8080/transaction \
-  -H "Content-Type: application/json" \
-  -d "{\"type\":\"income\",\"amount\":1000}"
+curl -X POST http://localhost:8080/transaction   -H "Content-Type: application/json"   -d '{
+        "type": "income",
+        "amount": 1000,
+        "category": "Salary",
+        "date": "2025-05-16",
+        "description": "Monthly salary"
+      }'
 ```
 
-### ❌ Adicionar despesa
+### 🔁 Atualizar transação
 
 ```bash
-curl -X POST http://localhost:8080/transaction \
-  -H "Content-Type: application/json" \
-  -d "{\"type\":\"expense\",\"amount\":200}"
+curl -X PUT http://localhost:8080/transactions/{id}   -H "Content-Type: application/json"   -d '{
+        "type": "expense",
+        "amount": 150.75,
+        "category": "Food",
+        "date": "2025-05-16",
+        "description": "Lunch at restaurant"
+      }'
+```
+
+### ❌ Deletar transação
+
+```bash
+curl -X DELETE http://localhost:8080/transactions/{id}
 ```
 
 ### 📋 Ver transações
@@ -135,6 +154,7 @@ curl http://localhost:8080/balance
 - Arquivos sensíveis e binários ignorados via `.gitignore`
 - Caminho de dados baseado no `user.HomeDir` (portável e seguro)
 - Dados salvos localmente com `os.MkdirAll` e `encoding/json`
+- Validação robusta de dados: tipo, data (`yyyy-mm-dd`), e campos obrigatórios
 
 ---
 
@@ -146,6 +166,6 @@ Este projeto foi desenvolvido para fins educacionais e uso pessoal. Livre para e
 
 ## ✍️ Autor
 
-Desenvolvido por Matheus Ribeiro
+Desenvolvido por Matheus Ribeiro  
 Contato: matheus.junio159@gmail.com  
-GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/seu-usuario)
+GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/mth-ribeiro-dev)
