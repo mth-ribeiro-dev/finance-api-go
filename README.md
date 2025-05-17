@@ -15,8 +15,22 @@ Este projeto implementa uma API REST simples para controle de finanças pessoais
 
 ## 📂 Estrutura do Projeto
 
-...
+```
+finance-api/
+├── cmd/               # Entrada principal da aplicação
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── handler/       # Controladores HTTP (API)
+│   ├── model/         # Definição das estruturas de dados
+│   ├── service/       # Lógica de negócios e regras
+│   └── storage/       # Persistência em arquivo JSON
+├── go.mod             # Gerenciamento de dependências Go
+├── .gitignore         # Arquivos ignorados pelo Git
+└── README.md          # Documentação do projeto
+```
 
+---
 ## 🧪 Testes Automatizados
 
 Este projeto possui testes unitários completos para os seguintes métodos da camada de serviço (`FinanceService`):
