@@ -1,82 +1,87 @@
-# 📊 Finance API - Controle Financeiro em Go
 
-Este projeto implementa uma API REST simples para controle de finanças pessoais, permitindo o registro de receitas e despesas, cálculo automático de saldo e persistência local dos dados em arquivo JSON.
+> 📘 Leia esta documentação em [português 🇧🇷](./README.pt-BR.md)
 
----
 
-## 🚀 Tecnologias Utilizadas
+# 📊 Finance API - Personal Finance Control in Go
 
-- **Go (Golang)** — linguagem principal
-- **Gin Gonic** — framework web para a API REST
-- **JSON** — formato de armazenamento dos dados
-- **Arquitetura Modular** — separação em `cmd`, `internal` e `pkg` (boa prática Go)
+This project implements a simple REST API for personal finance management, allowing the registration of income and expenses, automatic balance calculation, and local data persistence in a JSON file.
 
 ---
 
-## 📂 Estrutura do Projeto
+## 🚀 Technologies Used
+
+- **Go (Golang)** — main programming language
+- **Gin Gonic** — web framework for the REST API
+- **JSON** — data storage format
+- **Modular Architecture** — structured in `cmd`, `internal`, and `pkg` following Go best practices
+
+---
+
+## 📂 Project Structure
 
 ```
 finance-api/
-├── cmd/               # Entrada principal da aplicação
+├── cmd/               # Application entry point
 │   └── server/
 │       └── main.go
 ├── internal/
-│   ├── handler/       # Controladores HTTP (API)
-│   ├── model/         # Definição das estruturas de dados
-│   ├── service/       # Lógica de negócios e regras
-│   └── storage/       # Persistência em arquivo JSON
-├── go.mod             # Gerenciamento de dependências Go
-├── .gitignore         # Arquivos ignorados pelo Git
-└── README.md          # Documentação do projeto
+│   ├── handler/       # HTTP controllers (API)
+│   ├── model/         # Data structure definitions
+│   ├── service/       # Business logic and rules
+│   └── storage/       # JSON file persistence
+├── go.mod             # Go dependency management
+├── .gitignore         # Files ignored by Git
+└── README.md          # Project documentation
 ```
 
 ---
-## 🧪 Testes Automatizados
 
-Este projeto possui testes unitários completos para os seguintes métodos da camada de serviço (`FinanceService`):
+## 🧪 Automated Tests
 
-- `AddTransaction` — adiciona transações com diferentes validações
-- `GetAll` — retorna todas as transações
-- `GetBalance` — calcula o saldo com base em receitas e despesas
-- `DeleteTransaction` — remove transações por ID
-- `UpdateTransaction` — atualiza uma transação existente
-- `GetMaxID` — retorna o maior ID registrado
+This project includes comprehensive unit tests for the following methods in the service layer (`FinanceService`):
 
-### ▶️ Rodando os testes
+- `AddTransaction` — adds transactions with multiple validations
+- `GetAll` — returns all stored transactions
+- `GetBalance` — calculates balance based on income and expenses
+- `DeleteTransaction` — removes a transaction by ID
+- `UpdateTransaction` — updates an existing transaction
 
-Execute os testes com o seguinte comando na raiz do projeto:
+### ▶️ Running Tests
+
+To run all tests from the project root:
 
 ```bash
 go test ./...
 ```
 
-Para ver a cobertura de testes:
+To check test coverage:
 
 ```bash
 go test -cover ./...
 ```
 
+---
 
-## 🧱 Boas Práticas Adotadas
+## 🧱 Best Practices Applied
 
-- Organização modular: `cmd/`, `internal/`, `handler/`, `model/`, `service/`, `storage/`
-- Uso de `go.mod` para controle de dependências
-- Arquivos sensíveis e binários ignorados via `.gitignore`
-- Caminho de dados baseado no `user.HomeDir` (portável e seguro)
-- Dados salvos localmente com `os.MkdirAll` e `encoding/json`
-- Validação robusta de dados: tipo, data (`yyyy-mm-dd`), e campos obrigatórios
+- Modular organization: `cmd/`, `internal/`, `handler/`, `model/`, `service/`, `storage/`
+- Use of `go.mod` for dependency management
+- Sensitive files and binaries ignored via `.gitignore`
+- Cross-platform safe file path using `user.HomeDir`
+- Data saved locally using `os.MkdirAll` and `encoding/json`
+- Robust validation: transaction type, date (`yyyy-mm-dd`), and required fields
 
 ---
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está licenciado sob a [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).  
-Uso permitido apenas para fins **educacionais e não comerciais**, com atribuição ao autor.
+This project is licensed under the [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) license.  
+Use is permitted only for **educational and non-commercial purposes**, with proper credit to the author.
 
 ---
 
-## ✍️ Autor
+## ✍️ Author
 
-Desenvolvido por Matheus Ribeiro  
-Contato: matheus.junio159@gmail.com  
+Developed by Matheus Ribeiro  
+Contact: matheus.junio159@gmail.com  
 GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/mth-ribeiro-dev)
