@@ -15,137 +15,33 @@ Este projeto implementa uma API REST simples para controle de finanças pessoais
 
 ## 📂 Estrutura do Projeto
 
-```
-finance-api/
-├── cmd/               # Entrada principal da aplicação
-│   └── server/
-│       └── main.go
-├── internal/
-│   ├── handler/       # Controladores HTTP (API)
-│   ├── model/         # Definição das estruturas de dados
-│   ├── service/       # Lógica de negócios e regras
-│   └── storage/       # Persistência em arquivo JSON
-├── go.mod             # Gerenciamento de dependências Go
-├── .gitignore         # Arquivos ignorados pelo Git
-└── README.md          # Documentação do projeto
-```
+...
 
----
+## 🧪 Testes Automatizados
 
-## 🧠 Como Funciona
+Este projeto possui testes unitários completos para os seguintes métodos da camada de serviço (`FinanceService`):
 
-A API permite registrar transações financeiras com os seguintes campos:
+- `AddTransaction` — adiciona transações com diferentes validações
+- `GetAll` — retorna todas as transações
+- `GetBalance` — calcula o saldo com base em receitas e despesas
+- `DeleteTransaction` — remove transações por ID
+- `UpdateTransaction` — atualiza uma transação existente
+- `GetMaxID` — retorna o maior ID registrado
 
-```json
-{
-  "type": "income" | "expense",
-  "amount": 100.0,
-  "category": "string",
-  "date": "yyyy-mm-dd",
-  "description": "string"
-}
-```
+### ▶️ Rodando os testes
 
-Cada transação é armazenada com um ID único e salva em:
-
-```
-C:\Users\<seu_usuario>\financeiro\arquivo\transactions.json
-```
-
-Esse caminho é gerado automaticamente com base no usuário atual do sistema.
-
----
-
-## 📌 Endpoints Disponíveis
-
-| Método | Rota                   | Função                                 |
-|--------|------------------------|----------------------------------------|
-| POST   | `/transaction`         | Adiciona uma nova transação            |
-| GET    | `/transactions`        | Retorna o histórico completo           |
-| GET    | `/balance`             | Retorna o saldo atual                  |
-| PUT    | `/transactions/:id`    | Atualiza uma transação existente       |
-| DELETE | `/transactions/:id`    | Remove uma transação pelo ID           |
-
----
-
-## ▶️ Executando o Projeto
-
-### Pré-requisitos
-
-- Go 1.20+ instalado e configurado
-- Git (opcional para clonar)
-
-### Passos
-
-1. Clone o repositório:
+Execute os testes com o seguinte comando na raiz do projeto:
 
 ```bash
-git clone https://github.com/mth-ribeiro-dev/finance-api-go.git
-cd finance-api-go
+go test ./...
 ```
 
-2. Baixe as dependências:
+Para ver a cobertura de testes:
 
 ```bash
-go mod tidy
+go test -cover ./...
 ```
 
-3. Rode o projeto:
-
-```bash
-go run ./cmd/server
-```
-
-A API estará disponível em:  
-`http://localhost:8080`
-
----
-
-## 🧪 Testando com cURL ou Postman
-
-### ✅ Adicionar transação
-
-```bash
-curl -X POST http://localhost:8080/transaction   -H "Content-Type: application/json"   -d '{
-        "type": "income",
-        "amount": 1000,
-        "category": "Salary",
-        "date": "2025-05-16",
-        "description": "Monthly salary"
-      }'
-```
-
-### 🔁 Atualizar transação
-
-```bash
-curl -X PUT http://localhost:8080/transactions/{id}   -H "Content-Type: application/json"   -d '{
-        "type": "expense",
-        "amount": 150.75,
-        "category": "Food",
-        "date": "2025-05-16",
-        "description": "Lunch at restaurant"
-      }'
-```
-
-### ❌ Deletar transação
-
-```bash
-curl -X DELETE http://localhost:8080/transactions/{id}
-```
-
-### 📋 Ver transações
-
-```bash
-curl http://localhost:8080/transactions
-```
-
-### 💰 Ver saldo atual
-
-```bash
-curl http://localhost:8080/balance
-```
-
----
 
 ## 🧱 Boas Práticas Adotadas
 
@@ -158,9 +54,10 @@ curl http://localhost:8080/balance
 
 ---
 
-## 📬 Licença
+## 📄 Licença
 
-Este projeto foi desenvolvido para fins educacionais e uso pessoal. Livre para estudar, modificar e reutilizar.
+Este projeto está licenciado sob a [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).  
+Uso permitido apenas para fins **educacionais e não comerciais**, com atribuição ao autor.
 
 ---
 
