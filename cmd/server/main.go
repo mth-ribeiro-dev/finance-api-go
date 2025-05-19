@@ -31,8 +31,8 @@ func setupServices(router *gin.Engine) {
 	router.POST("/finance/transaction", financeHandler.AddTransaction)
 	router.GET("/finance/transactions/:userId", financeHandler.GetTransactions)
 	router.GET("/finance/balance/:userId", financeHandler.GetBalance)
-	router.PUT("/transactions/:id", financeHandler.UpdateTransaction)
-	router.DELETE("/transactions/:id", financeHandler.DeleteTransaction)
+	router.PUT("/finance/:id", financeHandler.UpdateTransaction)
+	router.DELETE("/finance/:id", financeHandler.DeleteTransaction)
 
 	router.POST("/user/register", userHandler.AddUser)
 	router.POST("/user/login", userHandler.AuthenticateUser)
