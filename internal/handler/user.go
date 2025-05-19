@@ -42,8 +42,9 @@ func (handler *UserHandler) AddUser(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Authentication successful",
 		"user": gin.H{
-			"id":   user.ID,
-			"name": user.Name,
+			"id":    user.ID,
+			"name":  user.Name,
+			"email": user.Email,
 		},
 	})
 }
@@ -68,8 +69,9 @@ func (handler *UserHandler) AuthenticateUser(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Authentication successful",
 		"user": gin.H{
-			"id":   user.ID,
-			"name": user.Name,
+			"id":    user.ID,
+			"name":  user.Name,
+			"email": user.Email,
 		},
 	})
 }
