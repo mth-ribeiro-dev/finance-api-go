@@ -7,18 +7,19 @@ import (
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/model"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/service"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
-type Handler struct {
+type FinanceHandle struct {
 	Finance *service.FinanceService
 }
 
-func NewHandler(finance *service.FinanceService) *Handler {
-	return &Handler{Finance: finance}
+func NewFinanceHandler(finance *service.FinanceService) *FinanceHandle {
+	return &FinanceHandle{Finance: finance}
 }
 
-func (handler *Handler) AddTransaction(context *gin.Context) {
+func (handler *FinanceHandle) AddTransaction(context *gin.Context) {
 	var transaction model.Transaction
 	if err := context.ShouldBindJSON(&transaction); err != nil {
 		var syntaxErr *json.SyntaxError
@@ -43,19 +44,41 @@ func (handler *Handler) AddTransaction(context *gin.Context) {
 		return
 	}
 
-	transaction = handler.Finance.AddTransaction(transaction)
+	transaction, err := handler.Finance.AddTransaction(transaction)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add transaction"})
+		return
+	}
 	context.JSON(http.StatusCreated, transaction)
 }
 
-func (handler *Handler) GetTransactions(context *gin.Context) {
-	context.JSON(http.StatusOK, handler.Finance.GetAll())
+func (handler *FinanceHandle) GetTransactions(context *gin.Context) {
+	userIDStr := context.Param("userId")
+	userID, err := strconv.Atoi(userIDStr)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	transactions := handler.Finance.GetTransactionByUserId(userID)
+	context.JSON(http.StatusOK, transactions)
 }
 
-func (handler *Handler) GetBalance(context *gin.Context) {
-	context.JSON(http.StatusOK, handler.Finance.GetBalance())
+func (handler *FinanceHandle) GetBalance(context *gin.Context) {
+	userIDStr := context.Param("userId")
+	userID, err := strconv.Atoi(userIDStr)
+
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	balance := handler.Finance.GetBalanceByUserId(userID)
+	context.JSON(http.StatusOK, gin.H{"balance": balance})
 }
 
-func (handler *Handler) UpdateTransaction(context *gin.Context) {
+func (handler *FinanceHandle) UpdateTransaction(context *gin.Context) {
 	id := context.Param("id")
 	var updatedTransaction model.Transaction
 	if err := context.ShouldBindJSON(&updatedTransaction); err != nil {
@@ -83,19 +106,32 @@ func (handler *Handler) UpdateTransaction(context *gin.Context) {
 
 	err := handler.Finance.UpdateTransaction(id, updatedTransaction)
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found"})
+		if err.Error() == "transaction not found" {
+			context.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found"})
+		} else {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update transaction"})
+		}
 		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"message": "Transaction updated successfully"})
 }
 
-func (handler *Handler) DeleteTransaction(context *gin.Context) {
+func (handler *FinanceHandle) DeleteTransaction(context *gin.Context) {
 	id := context.Param("id")
-
-	err := handler.Finance.DeleteTransaction(id)
+	_, err := strconv.Atoi(id)
 	if err != nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found"})
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid transaction ID"})
+		return
+	}
+
+	err = handler.Finance.DeleteTransaction(id)
+	if err != nil {
+		if err.Error() == "transaction not found" {
+			context.JSON(http.StatusNotFound, gin.H{"error": "Transaction not found"})
+		} else {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete transaction"})
+		}
 		return
 	}
 

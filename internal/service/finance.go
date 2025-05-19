@@ -2,54 +2,50 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/model"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/storage"
 	"log"
-	"os"
-	"os/user"
-	"path/filepath"
 	"strconv"
+	"sync"
 )
 
 type FinanceService struct {
 	Transaction []model.Transaction
 	NextID      int
-	Filename    string
+	Storage     storage.FinanceStorage
+	mu          sync.Mutex
 }
 
-func NewFinanceService() *FinanceService {
-	financeService := &FinanceService{}
-	financeService.Filename = financeService.getFilePath()
-	financeService.loadTransactions()
-	return financeService
-}
-
-func (financeService *FinanceService) getFilePath() string {
-	currentUser, err := user.Current()
+func NewFinanceService(storage storage.FinanceStorage) *FinanceService {
+	transactions, err := storage.Load()
 	if err != nil {
-		log.Fatalf("Error getting current user: %v", err)
+		log.Printf("Error loading transactions: %v\n", err)
+		transactions = []model.Transaction{}
 	}
-	basePath := filepath.Join(currentUser.HomeDir, "financeiro")
 
-	err = os.MkdirAll(basePath, os.ModePerm)
-	if err != nil {
-		log.Fatalf("Error creating financeiro directory: %v", err)
+	return &FinanceService{
+		Transaction: transactions,
+		NextID:      getMaxIDTransactions(transactions) + 1,
+		Storage:     storage,
 	}
-	return filepath.Join(basePath, "transactions.json")
 }
 
-func (FinanceService *FinanceService) getMaxID() int {
+func getMaxIDTransactions(transactions []model.Transaction) int {
 	maxID := 0
-	for _, transaction := range FinanceService.Transaction {
-		if transaction.ID > maxID {
-			maxID = transaction.ID
+	for _, transactionModel := range transactions {
+		if transactionModel.ID > maxID {
+			maxID = transactionModel.ID
 		}
 	}
 	return maxID
 }
 
 func (financeService *FinanceService) loadTransactions() {
-	transactions, err := storage.LoadFromFile(financeService.Filename)
+	financeService.mu.Lock()
+	defer financeService.mu.Unlock()
+
+	transactions, err := financeService.Storage.Load()
 	if err != nil {
 		log.Printf("Error loading finance transactions: %v\n", err)
 		financeService.Transaction = []model.Transaction{}
@@ -57,59 +53,86 @@ func (financeService *FinanceService) loadTransactions() {
 		return
 	}
 	financeService.Transaction = transactions
-	financeService.NextID = financeService.getMaxID() + 1
+	financeService.NextID = getMaxIDTransactions(transactions) + 1
 }
 
-func (financeService *FinanceService) saveTransactions() {
-	err := storage.SaveToFile(financeService.Transaction, financeService.Filename)
+func (financeService *FinanceService) saveTransactions() error {
+	err := financeService.Storage.Save(financeService.Transaction)
 	if err != nil {
-		log.Printf("Error saving finance transactions: %v\n", err)
+		return fmt.Errorf("Error saving finance transactions: %v\n", err)
 	}
+	return nil
 }
 
-func (finance *FinanceService) AddTransaction(t model.Transaction) model.Transaction {
-	t.ID = finance.NextID
-	finance.NextID++
-	finance.Transaction = append(finance.Transaction, t)
-	finance.saveTransactions()
-	return t
+func (financeService *FinanceService) AddTransaction(transaction model.Transaction) (model.Transaction, error) {
+	financeService.mu.Lock()
+	defer financeService.mu.Unlock()
+
+	transaction.ID = financeService.NextID
+	financeService.NextID++
+	financeService.Transaction = append(financeService.Transaction, transaction)
+	err := financeService.saveTransactions()
+	if err != nil {
+		return model.Transaction{}, err
+	}
+	return transaction, nil
 }
 
-func (finance *FinanceService) GetAll() []model.Transaction {
-	return finance.Transaction
+func (financeService *FinanceService) GetTransactionByUserId(userID int) []model.Transaction {
+	financeService.mu.Lock()
+	defer financeService.mu.Unlock()
+
+	var result []model.Transaction
+	for _, transaction := range financeService.Transaction {
+		if transaction.UserID == userID {
+			result = append(result, transaction)
+		}
+	}
+	return result
 }
 
-func (finance *FinanceService) GetBalance() float64 {
+func (financeService *FinanceService) GetBalanceByUserId(userID int) float64 {
+	financeService.mu.Lock()
+	defer financeService.mu.Unlock()
+
 	var balance float64
-	for _, transaction := range finance.Transaction {
-		if transaction.Type == "income" {
-			balance += transaction.Amount
-		} else if transaction.Type == "expense" {
-			balance -= transaction.Amount
+	for _, transaction := range financeService.Transaction {
+		if transaction.ID == userID {
+			if transaction.Type == "income" {
+				balance += transaction.Amount
+			} else if transaction.Type == "expense" {
+				balance -= transaction.Amount
+			}
 		}
 	}
 	return balance
 }
 
-func (finance *FinanceService) DeleteTransaction(idString string) error {
+func (financeService *FinanceService) DeleteTransaction(idString string) error {
+	financeService.mu.Lock()
+	defer financeService.mu.Unlock()
+
 	id, _ := strconv.Atoi(idString)
-	for index, transaction := range finance.Transaction {
-		if transaction.ID == id {
-			finance.Transaction = append(finance.Transaction[:index], finance.Transaction[index+1:]...)
-			return storage.SaveToFile(finance.Transaction, finance.Filename)
+	for index, transactionModel := range financeService.Transaction {
+		if transactionModel.ID == id {
+			financeService.Transaction = append(financeService.Transaction[:index], financeService.Transaction[index+1:]...)
+			return financeService.Storage.Save(financeService.Transaction)
 		}
 	}
-	return errors.New("Transaction not found")
+	return errors.New("transaction not found")
 }
 
-func (finance *FinanceService) UpdateTransaction(idString string, updated model.Transaction) error {
+func (financeService *FinanceService) UpdateTransaction(idString string, updated model.Transaction) error {
+	financeService.mu.Lock()
+	defer financeService.mu.Unlock()
+
 	id, _ := strconv.Atoi(idString)
-	for index, transaction := range finance.Transaction {
-		if transaction.ID == id {
+	for index, transactionModel := range financeService.Transaction {
+		if transactionModel.ID == id {
 			updated.ID = id
-			finance.Transaction[index] = updated
-			return storage.SaveToFile(finance.Transaction, finance.Filename)
+			financeService.Transaction[index] = updated
+			return financeService.Storage.Save(financeService.Transaction)
 		}
 	}
-	return errors.New("Transaction not found")
+	return errors.New("transaction not found")
 }

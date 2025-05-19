@@ -7,4 +7,5 @@ type Transaction struct {
 	Category    string   `json:"category"`
 	Date        DateOnly `json:"date"`
 	Description string   `json:"description"`
+	UserID      int      `json:"user_id"`
 }
