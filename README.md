@@ -1,87 +1,118 @@
+📘 Read this documentation in [Português 🇧🇷](./README.pt-BR.md)
 
-> 📘 Leia esta documentação em [português 🇧🇷](./README.pt-BR.md)
+# 📊 Finance API - Personal Finance Management in Go
 
+This project is a REST API for managing personal finances developed in Go. It allows recording income and expenses, automatic balance calculation, local data persistence using a JSON file, and includes user management features.
 
-# 📊 Finance API - Personal Finance Control in Go
+## Features
 
-This project implements a simple REST API for personal finance management, allowing the registration of income and expenses, automatic balance calculation, and local data persistence in a JSON file.
+- Transaction recording (income and expenses)
+- Automatic balance calculation
+- Local data persistence using JSON file
+- User management (registration, authentication, and deletion)
+- Transactions linked to specific users
 
----
+## Technologies Used
 
-## 🚀 Technologies Used
+- Go (Golang)
+- Gin Gonic (web framework)
+- Encoding/JSON for data persistence
+- Modular architecture
 
-- **Go (Golang)** — main programming language
-- **Gin Gonic** — web framework for the REST API
-- **JSON** — data storage format
-- **Modular Architecture** — structured in `cmd`, `internal`, and `pkg` following Go best practices
+## Project Structure
 
----
+The project follows a modular structure, organized as follows:
 
-## 📂 Project Structure
 
 ```
 finance-api/
-├── cmd/               # Application entry point
+├── cmd/
 │   └── server/
 │       └── main.go
 ├── internal/
-│   ├── handler/       # HTTP controllers (API)
-│   ├── model/         # Data structure definitions
-│   ├── service/       # Business logic and rules
-│   └── storage/       # JSON file persistence
-├── go.mod             # Go dependency management
-├── .gitignore         # Files ignored by Git
-└── README.md          # Project documentation
+│   ├── handler/
+│   │   ├── finance.go
+│   │   └── user.go
+│   ├── model/
+│   │   ├── dateOnly.go
+│   │   ├── transaction.go
+│   │   └── user.go
+│   ├── service/
+│   │   ├── finance.go
+│   │   ├── finance_test.go
+│   │   ├── user.go
+│   │   └── user_test.go
+│   └── storage/
+│       ├── commonStorage.go
+│       ├── financesStorage.go
+│       └── usersStorage.go
+├── go.mod
+├── go.sum
+├── .gitignore
+├── README.md
+└── README.pt-BR.md
 ```
+## How to Run
 
----
-
-## 🧪 Automated Tests
-
-This project includes comprehensive unit tests for the following methods in the service layer (`FinanceService`):
-
-- `AddTransaction` — adds transactions with multiple validations
-- `GetAll` — returns all stored transactions
-- `GetBalance` — calculates balance based on income and expenses
-- `DeleteTransaction` — removes a transaction by ID
-- `UpdateTransaction` — updates an existing transaction
-
-### ▶️ Running Tests
-
-To run all tests from the project root:
+1. Clone the repository:
 
 ```bash
-go test ./...
+  git clone https://github.com/mth-ribeiro-dev/finance-api.git
 ```
 
-To check test coverage:
+2. Navigate to the project directory:
 
 ```bash
-go test -cover ./...
+  cd finance-api
 ```
 
----
+3. Install dependencies:
 
-## 🧱 Best Practices Applied
+```bash
+  go get -v ./...
+```
 
-- Modular organization: `cmd/`, `internal/`, `handler/`, `model/`, `service/`, `storage/`
+4. Run the application:
+
+```bash
+   go run cmd/server/main.go
+```
+
+## API Endpoints
+
+### Users
+- `POST /user/register`: Registers a new user
+- `POST /user/login`: Authenticates a user
+- `DELETE /user/:id`: Deactivates a user
+
+### Financial Transactions
+- `POST /finance/transaction`: Adds a new transaction
+- `GET /finance/transactions/:userId`: Returns all transactions for a user
+- `GET /finance/balance/:userId`: Returns a user's current balance
+- `PUT /finance/:id`: Update an existing transaction
+- `DELETE /finance/:id`: Delete a transaction
+
+## Testing
+
+The project includes comprehensive unit tests for the service layer. To run the tests:
+```bash
+   go test ./...
+```
+
+## Best Practices Applied
+
+- Modular code organization
 - Use of `go.mod` for dependency management
-- Sensitive files and binaries ignored via `.gitignore`
-- Cross-platform safe file path using `user.HomeDir`
-- Data saved locally using `os.MkdirAll` and `encoding/json`
-- Robust validation: transaction type, date (`yyyy-mm-dd`), and required fields
+- Implementation of unit tests
+- Use of interfaces for decoupling (e.g., storage)
+- Robust input validation
 
----
+## License
 
-## 📄 License
+This project is licensed under the [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) license for educational and non-commercial purposes.
 
-This project is licensed under the [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) license.  
-Use is permitted only for **educational and non-commercial purposes**, with proper credit to the author.
+## Author
 
----
-
-## ✍️ Author
-
-Developed by Matheus Ribeiro  
-Contact: matheus.junio159@gmail.com  
-GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/mth-ribeiro-dev)
+Developed by Matheus Ribeiro
+- Email: matheus.junio159@gmail.com
+- GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/mth-ribeiro-dev)

@@ -2,82 +2,112 @@
 
 # 📊 Finance API - Controle Financeiro em Go
 
-Este projeto implementa uma API REST simples para controle de finanças pessoais, permitindo o registro de receitas e despesas, cálculo automático de saldo e persistência local dos dados em arquivo JSON.
+Este projeto é uma API REST para gerenciamento de finanças pessoais desenvolvida em Go. Ela permite o registro de receitas e despesas, cálculo automático de saldo, persistência local de dados em arquivo JSON, e inclui gerenciamento de usuários.
 
----
+## Funcionalidades
 
-## 🚀 Tecnologias Utilizadas
+- Registro de transações (receitas e despesas)
+- Cálculo automático de saldo
+- Persistência de dados em arquivo JSON local
+- Gerenciamento de usuários (registro, autenticação e exclusão)
+- Associação de transações a usuários específicos
 
-- **Go (Golang)** — linguagem principal
-- **Gin Gonic** — framework web para a API REST
-- **JSON** — formato de armazenamento dos dados
-- **Arquitetura Modular** — separação em `cmd`, `internal` e `pkg` (boa prática Go)
+## Tecnologias Utilizadas
 
----
+- Go (Golang)
+- Gin Gonic (framework web)
+- Encoding/JSON para persistência de dados
+- Arquitetura modular
 
-## 📂 Estrutura do Projeto
+## Estrutura do Projeto
+
+O projeto segue uma estrutura modular, organizada da seguinte forma:
 
 ```
 finance-api/
-├── cmd/               # Entrada principal da aplicação
+├── cmd/
 │   └── server/
 │       └── main.go
 ├── internal/
-│   ├── handler/       # Controladores HTTP (API)
-│   ├── model/         # Definição das estruturas de dados
-│   ├── service/       # Lógica de negócios e regras
-│   └── storage/       # Persistência em arquivo JSON
-├── go.mod             # Gerenciamento de dependências Go
-├── .gitignore         # Arquivos ignorados pelo Git
-└── README.md          # Documentação do projeto
+│   ├── handler/
+│   │   ├── finance.go
+│   │   └── user.go
+│   ├── model/
+│   │   ├── dateOnly.go
+│   │   ├── transaction.go
+│   │   └── user.go
+│   ├── service/
+│   │   ├── finance.go
+│   │   ├── finance_test.go
+│   │   ├── user.go
+│   │   └── user_test.go
+│   └── storage/
+│       ├── commonStorage.go
+│       ├── financesStorage.go
+│       └── usersStorage.go
+├── go.mod
+├── go.sum
+├── .gitignore
+├── README.md
+└── README.pt-BR.md
 ```
 
----
-## 🧪 Testes Automatizados
+## Como Executar
 
-Este projeto possui testes unitários completos para os seguintes métodos da camada de serviço (`FinanceService`):
-
-- `AddTransaction` — adiciona transações com diferentes validações
-- `GetAll` — retorna todas as transações
-- `GetBalance` — calcula o saldo com base em receitas e despesas
-- `DeleteTransaction` — remove transações por ID
-- `UpdateTransaction` — atualiza uma transação existente
-
-### ▶️ Rodando os testes
-
-Execute os testes com o seguinte comando na raiz do projeto:
+1. Clone o repositório:
 
 ```bash
-go test ./...
+  git clone https://github.com/mth-ribeiro-dev/finance-api.git
 ```
-
-Para ver a cobertura de testes:
+2. Navegue até o diretório do projeto:
 
 ```bash
-go test -cover ./...
+  cd finance-api
+```
+3. Instale as dependências:
+
+```bash
+  go get -v ./...
+```
+4. Execute a apalicação
+```bash
+   go run cmd/server/main.go
 ```
 
+## Endpoints da API
 
-## 🧱 Boas Práticas Adotadas
+### Usuários
+- `POST /user/register`: Registra um novo usuário
+- `POST /user/login`: Autentica um usuário
+- `DELETE /user/:id`: Desativa um usuário
 
-- Organização modular: `cmd/`, `internal/`, `handler/`, `model/`, `service/`, `storage/`
-- Uso de `go.mod` para controle de dependências
-- Arquivos sensíveis e binários ignorados via `.gitignore`
-- Caminho de dados baseado no `user.HomeDir` (portável e seguro)
-- Dados salvos localmente com `os.MkdirAll` e `encoding/json`
-- Validação robusta de dados: tipo, data (`yyyy-mm-dd`), e campos obrigatórios
+### Transações Financeiras
+- `POST /finance/transaction`: Adiciona uma nova transação
+- `GET /finance/transactions/:userId`: Retorna todas as transações de um usuário
+- `GET /finance/balance/:userId`: Retorna o saldo atual de um usuário
+- `PUT /finance/:id`: Atualiza uma transação existente
+- `DELETE /finance/:id`: Remove uma transação
 
----
+## Testes
 
-## 📄 Licença
+O projeto inclui testes unitários abrangentes para a camada de serviço. Para executar os testes:
+```bash
+   go test ./...
+```
+## Boas Práticas Aplicadas
 
-Este projeto está licenciado sob a [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).  
-Uso permitido apenas para fins **educacionais e não comerciais**, com atribuição ao autor.
+- Organização modular do código
+- Uso de `go.mod` para gerenciamento de dependências
+- Implementação de testes unitários
+- Uso de interfaces para desacoplamento (ex: storage)
+- Validação robusta de entradas
 
----
+## Licença
 
-## ✍️ Autor
+Este projeto está licenciado sob a [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) para fins educacionais e não comerciais.
 
-Desenvolvido por Matheus Ribeiro  
-Contato: matheus.junio159@gmail.com  
-GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/mth-ribeiro-dev)
+## Autor
+
+Desenvolvido por Matheus Ribeiro
+- Email: matheus.junio159@gmail.com
+- GitHub: [https://github.com/mth-ribeiro-dev](https://github.com/mth-ribeiro-dev)
