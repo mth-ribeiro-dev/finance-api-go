@@ -11,6 +11,7 @@ This project is a REST API for managing personal finances developed in Go. It al
 - Local data persistence using JSON file
 - User management (registration, authentication, and deletion)
 - Transactions linked to specific users
+- API documentation with Swagger
 
 ## Technologies Used
 
@@ -18,6 +19,7 @@ This project is a REST API for managing personal finances developed in Go. It al
 - Gin Gonic (web framework)
 - Encoding/JSON for data persistence
 - Modular architecture
+- Swagger for API documentation
 
 ## Project Structure
 
@@ -78,7 +80,13 @@ finance-api/
    go run cmd/server/main.go
 ```
 
+5. Access the Swagger documentation:
+
+   Open your browser and go to `http://localhost:8081/swagger/index.html`
+
 ## API Endpoints
+
+For a detailed and interactive documentation of all API endpoints, please refer to the Swagger UI available at `http://localhost:8081/swagger/index.html` when the application is running.
 
 ### Users
 - `POST /user/register`: Registers a new user
@@ -98,6 +106,17 @@ The project includes comprehensive unit tests for the service layer. To run the 
 ```bash
    go test ./...
 ```
+
+## Documentation
+
+This project uses Swagger for API documentation. The documentation includes detailed information about all endpoints, request/response models, and allows for interactive API testing.
+
+To view the Swagger documentation:
+1. Start the application
+2. Open your web browser
+3. Navigate to `http://localhost:8081/swagger/index.html`
+
+The code also includes comprehensive comments, enhancing readability and maintainability.
 
 ## Best Practices Applied
 
