@@ -1,14 +1,25 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/handler"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/service"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/storage"
+	"time"
 )
 
 func main() {
 	router := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:8080"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	config.AllowCredentials = true
+	config.MaxAge = 12 * time.Hour
+
+	router.Use(cors.New(config))
 
 	setupServices(router)
 
