@@ -18,6 +18,17 @@ func NewUserHandler(userService *service.UserService) *UserHandler {
 	return &UserHandler{User: userService}
 }
 
+// AddUser godoc
+// @Summary Register a new user
+// @Description Register a new user in the system
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body model.User true "User object"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /users [post]
 func (handler *UserHandler) AddUser(context *gin.Context) {
 	var newUser model.User
 	if err := context.ShouldBindJSON(&newUser); err != nil {
@@ -49,6 +60,17 @@ func (handler *UserHandler) AddUser(context *gin.Context) {
 	})
 }
 
+// AuthenticateUser godoc
+// @Summary Authenticate a user
+// @Description Authenticate a user with email and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param loginInfo body object true "Login information"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Router /users/auth [post]
 func (handler *UserHandler) AuthenticateUser(context *gin.Context) {
 	var loginInfo struct {
 		Email    string `json:"email" binding:"required,email"`
@@ -76,6 +98,18 @@ func (handler *UserHandler) AuthenticateUser(context *gin.Context) {
 	})
 }
 
+// DeleteUser godoc
+// @Summary Delete a user
+// @Description Delete an existing user from the system
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /users/{id} [delete]
 func (handler *UserHandler) DeleteUser(context *gin.Context) {
 	id := context.Param("id")
 	_, err := strconv.Atoi(id)

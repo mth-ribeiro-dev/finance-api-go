@@ -19,6 +19,17 @@ func NewFinanceHandler(finance *service.FinanceService) *FinanceHandle {
 	return &FinanceHandle{Finance: finance}
 }
 
+// AddTransaction godoc
+// @Summary Add a new transaction
+// @Description Add a new financial transaction for a user
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param transaction body model.Transaction true "Transaction object"
+// @Success 201 {object} model.Transaction
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /transactions [post]
 func (handler *FinanceHandle) AddTransaction(context *gin.Context) {
 	var transaction model.Transaction
 	if err := context.ShouldBindJSON(&transaction); err != nil {
@@ -52,6 +63,16 @@ func (handler *FinanceHandle) AddTransaction(context *gin.Context) {
 	context.JSON(http.StatusCreated, transaction)
 }
 
+// GetTransactions godoc
+// @Summary Get user transactions
+// @Description Get all transactions for a specific user
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param userId path int true "User ID"
+// @Success 200 {array} model.Transaction
+// @Failure 400 {object} map[string]string
+// @Router /transactions/{userId} [get]
 func (handler *FinanceHandle) GetTransactions(context *gin.Context) {
 	userIDStr := context.Param("userId")
 	userID, err := strconv.Atoi(userIDStr)
@@ -65,6 +86,16 @@ func (handler *FinanceHandle) GetTransactions(context *gin.Context) {
 	context.JSON(http.StatusOK, transactions)
 }
 
+// GetBalance godoc
+// @Summary Get user balance
+// @Description Get the current balance for a specific user
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param userId path int true "User ID"
+// @Success 200 {object} map[string]float64
+// @Failure 400 {object} map[string]string
+// @Router /balance/{userId} [get]
 func (handler *FinanceHandle) GetBalance(context *gin.Context) {
 	userIDStr := context.Param("userId")
 	userID, err := strconv.Atoi(userIDStr)
@@ -78,6 +109,19 @@ func (handler *FinanceHandle) GetBalance(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"balance": balance})
 }
 
+// UpdateTransaction godoc
+// @Summary Update a transaction
+// @Description Update an existing financial transaction
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param id path string true "Transaction ID"
+// @Param transaction body model.Transaction true "Updated transaction object"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /transactions/{id} [put]
 func (handler *FinanceHandle) UpdateTransaction(context *gin.Context) {
 	id := context.Param("id")
 	var updatedTransaction model.Transaction
@@ -117,6 +161,17 @@ func (handler *FinanceHandle) UpdateTransaction(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"message": "Transaction updated successfully"})
 }
 
+// DeleteTransaction godoc
+// @Summary Delete a transaction
+// @Description Delete an existing financial transaction
+// @Tags finance
+// @Accept json
+// @Produce json
+// @Param id path string true "Transaction ID"
+// @Success 200 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /transactions/{id} [delete]
 func (handler *FinanceHandle) DeleteTransaction(context *gin.Context) {
 	id := context.Param("id")
 	_, err := strconv.Atoi(id)
