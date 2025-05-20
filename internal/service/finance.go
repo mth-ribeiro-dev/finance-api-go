@@ -97,7 +97,7 @@ func (financeService *FinanceService) GetBalanceByUserId(userID int) float64 {
 
 	var balance float64
 	for _, transaction := range financeService.Transaction {
-		if transaction.ID == userID {
+		if transaction.UserID == userID {
 			if transaction.Type == "income" {
 				balance += transaction.Amount
 			} else if transaction.Type == "expense" {
