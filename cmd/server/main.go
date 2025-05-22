@@ -4,13 +4,13 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mth-ribeiro-dev/finance-api-go.git/docs"
+	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/config"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/handler"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/service"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/storage"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gopkg.in/yaml.v2"
-	"log"
 	"os"
 	"time"
 )
@@ -91,18 +91,16 @@ func setupServices(router *gin.Engine) {
 	userService := service.NewUserService(userStorage)
 	userHandler := handler.NewUserHandler(userService)
 
-	// Email service setup
-	configEmail, err := loadConfig("internal/config/config.yaml")
-	if err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
-	}
+	cfg := config.GetConfig()
 
+	// Configurar o serviço de email
 	emailService := service.NewEmailService(
-		configEmail.SMTP.Host,
-		configEmail.SMTP.Port,
-		configEmail.SMTP.Username,
-		configEmail.SMTP.Password,
+		cfg.SMTP.Host,
+		cfg.SMTP.Port,
+		cfg.SMTP.Username,
+		cfg.SMTP.Password,
 	)
+
 	emailHandler := handler.NewEmailHandler(emailService)
 
 	v1 := router.Group("/api/v1")

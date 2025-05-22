@@ -1,33 +1,26 @@
 package config
 
-import (
-	"gopkg.in/yaml.v2"
-	"os"
-)
-
+// Config holds all configuration for the application
 type Config struct {
-	SMTP struct {
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
-	} `yaml:"smtp"`
+	SMTP SMTPConfig
 }
 
-func LoadConfig(filename string) (*Config, error) {
-	config := &Config{}
+// SMTPConfig holds SMTP-specific configuration
+type SMTPConfig struct {
+	Host     string
+	Port     int
+	Username string
+	Password string
+}
 
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
+// GetConfig returns the application configuration
+func GetConfig() *Config {
+	return &Config{
+		SMTP: SMTPConfig{
+			Host:     "sandbox.smtp.mailtrap.io",
+			Port:     2525,
+			Username: "b630fa712fb0d2",
+			Password: "2dcaf1a05a1a64",
+		},
 	}
-	defer file.Close()
-
-	decoder := yaml.NewDecoder(file)
-	err = decoder.Decode(config)
-	if err != nil {
-		return nil, err
-	}
-
-	return config, nil
 }
