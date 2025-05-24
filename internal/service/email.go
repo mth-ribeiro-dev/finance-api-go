@@ -25,7 +25,7 @@ func NewEmailService(host string, port int, username, password string) *EmailSer
 func (s *EmailService) SendEmail(data model.EmailData) error {
 	m := mail.NewMessage()
 	m.SetHeader("From", data.Email)
-	m.SetHeader("To", "viniciusjunioribeiro05@gmail.com")
+	m.SetHeader("To", "youremail@example.com")
 	m.SetHeader("Subject", data.Subject)
 	m.SetBody("text/plain", fmt.Sprintf("De: %s\n\n%s", data.Name, data.Message))
 

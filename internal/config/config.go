@@ -17,10 +17,10 @@ type SMTPConfig struct {
 func GetConfig() *Config {
 	return &Config{
 		SMTP: SMTPConfig{
-			Host:     "sandbox.smtp.mailtrap.io",
-			Port:     2525,
-			Username: "b630fa712fb0d2",
-			Password: "2dcaf1a05a1a64",
+			Host:     "",
+			Port:     0,
+			Username: "",
+			Password: "",
 		},
 	}
 }
