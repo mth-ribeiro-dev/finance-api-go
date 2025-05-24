@@ -51,7 +51,7 @@ func (handler *UserHandler) AddUser(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{
-		"message": "Authentication successful",
+		"message": "Add users successful",
 		"user": gin.H{
 			"id":    user.ID,
 			"name":  user.Name,

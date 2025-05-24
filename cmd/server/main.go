@@ -4,13 +4,43 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mth-ribeiro-dev/finance-api-go.git/docs"
+	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/config"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/handler"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/service"
 	"github.com/mth-ribeiro-dev/finance-api-go.git/internal/storage"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gopkg.in/yaml.v2"
+	"os"
 	"time"
 )
+
+type Config struct {
+	SMTP struct {
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+	} `yaml:"smtp"`
+}
+
+func loadConfig(filename string) (*Config, error) {
+	config := &Config{}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	decoder := yaml.NewDecoder(file)
+	err = decoder.Decode(config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
 
 // @title MyFinance API
 // @version 0.3.3
@@ -26,16 +56,17 @@ import (
 // @BasePath /api/v1
 // @schemes http
 func main() {
+
 	router := gin.Default()
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:8080"}
-	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
-	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
-	config.AllowCredentials = true
-	config.MaxAge = 12 * time.Hour
+	configCors := cors.DefaultConfig()
+	configCors.AllowOrigins = []string{"http://localhost:8080"}
+	configCors.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+	configCors.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	configCors.AllowCredentials = true
+	configCors.MaxAge = 12 * time.Hour
 
-	router.Use(cors.New(config))
+	router.Use(cors.New(configCors))
 
 	setupServices(router)
 
@@ -60,6 +91,18 @@ func setupServices(router *gin.Engine) {
 	userService := service.NewUserService(userStorage)
 	userHandler := handler.NewUserHandler(userService)
 
+	cfg := config.GetConfig()
+
+	// Configurar o serviço de email
+	emailService := service.NewEmailService(
+		cfg.SMTP.Host,
+		cfg.SMTP.Port,
+		cfg.SMTP.Username,
+		cfg.SMTP.Password,
+	)
+
+	emailHandler := handler.NewEmailHandler(emailService)
+
 	v1 := router.Group("/api/v1")
 	{
 		// Finance routes
@@ -73,5 +116,8 @@ func setupServices(router *gin.Engine) {
 		v1.POST("/users", userHandler.AddUser)
 		v1.POST("/users/auth", userHandler.AuthenticateUser)
 		v1.DELETE("/users/:id", userHandler.DeleteUser)
+
+		// Email routes
+		v1.POST("/send-email", emailHandler.SendEmail)
 	}
 }
