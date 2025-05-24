@@ -12,6 +12,7 @@ This project is a REST API for managing personal finances developed in Go. It al
 - User management (registration, authentication, and deletion)
 - Transactions linked to specific users
 - API documentation with Swagger
+- Email sending functionality
 
 ## Technologies Used
 
@@ -20,6 +21,7 @@ This project is a REST API for managing personal finances developed in Go. It al
 - Encoding/JSON for data persistence
 - Modular architecture
 - Swagger for API documentation
+- SMTP for email sending
 
 ## Project Structure
 
@@ -84,21 +86,36 @@ finance-api/
 
    Open your browser and go to `http://localhost:8081/swagger/index.html`
 
+## Configuration
+
+Create a `config.yaml` file in the project root with the following structure:
+
+```yaml
+smtp:
+  host: your_smtp_host
+  port: your_smtp_port
+  username: your_smtp_username
+  password: your_smtp_password
+```
+
 ## API Endpoints
 
 For a detailed and interactive documentation of all API endpoints, please refer to the Swagger UI available at `http://localhost:8081/swagger/index.html` when the application is running.
 
 ### Users
-- `POST /user/register`: Registers a new user
-- `POST /user/login`: Authenticates a user
-- `DELETE /user/:id`: Deactivates a user
+- `POST /api/v1/user/register`: Registers a new user
+- `POST /api/v1/user/login`: Authenticates a user
+- `DELETE /api/v1/user/:id`: Deactivates a user
 
 ### Financial Transactions
-- `POST /finance/transaction`: Adds a new transaction
-- `GET /finance/transactions/:userId`: Returns all transactions for a user
-- `GET /finance/balance/:userId`: Returns a user's current balance
-- `PUT /finance/:id`: Update an existing transaction
-- `DELETE /finance/:id`: Delete a transaction
+- `POST /api/v1/finance/transaction`: Adds a new transaction
+- `GET /api/v1/finance/transactions/:userId`: Returns all transactions for a user
+- `GET /api/v1/finance/balance/:userId`: Returns a user's current balance
+- `PUT /api/v1/finance/:id`: Update an existing transaction
+- `DELETE /api/v1/finance/:id`: Delete a transaction
+
+### Email
+- `POST /api/v1/send-email`: Send an email
 
 ## Testing
 
