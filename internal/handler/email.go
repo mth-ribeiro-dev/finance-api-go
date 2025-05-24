@@ -15,6 +15,17 @@ func NewEmailHandler(emailService *service.EmailService) *EmailHandler {
 	return &EmailHandler{emailService: emailService}
 }
 
+// SendEmail godoc
+// @Summary Send an email
+// @Description Send an email using the provided email data
+// @Tags email
+// @Accept json
+// @Produce json
+// @Param emailData body model.EmailData true "Email data"
+// @Success 200 {object} map[string]string "message":"Email sent successfully"
+// @Failure 400 {object} map[string]string "error":"Invalid email data"
+// @Failure 500 {object} map[string]string "error":"Failed to send email"
+// @Router /send-email [post]
 func (h *EmailHandler) SendEmail(c *gin.Context) {
 	var emailData model.EmailData
 
